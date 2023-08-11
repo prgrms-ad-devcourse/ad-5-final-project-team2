@@ -5,7 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Basic
 RUN apt-get update -y && \
-    apt-get install -y sudo libeigen3-dev libboost-all-dev libssl-dev libyaml-cpp-dev wget build-essential cmake gdb libgl1-mesa-dev libwayland-dev libxkbcommon-dev wayland-protocols libegl1-mesa-dev libc++-dev libglew-dev libeigen3-dev cmake g++ ninja-build cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev && \
+    apt-get install -y sudo libeigen3-dev libboost-all-dev libssl-dev libyaml-cpp-dev wget build-essential cmake gdb libgl1-mesa-dev libwayland-dev libxkbcommon-dev wayland-protocols libegl1-mesa-dev libc++-dev libglew-dev libeigen3-dev cmake g++ ninja-build cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
 
 # OpenCV
 RUN wget -O opencv.zip https://github.com/opencv/opencv/archive/4.4.0.zip && \
