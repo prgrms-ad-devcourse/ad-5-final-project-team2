@@ -24,6 +24,7 @@ RUN apt-get install -y libgl1-mesa-dev libwayland-dev libxkbcommon-dev wayland-p
 # Pangolin
 RUN wget https://github.com/stevenlovegrove/Pangolin/archive/refs/tags/v0.6.zip &&\
     unzip v0.6.zip &&\
+    rm -rf v0.6.zip &&\
     cd Pangolin-0.6 && mkdir build && cd build &&\
     cmake .. &&\
     make -j4 &&\
@@ -33,5 +34,6 @@ RUN wget https://github.com/stevenlovegrove/Pangolin/archive/refs/tags/v0.6.zip 
 RUN apt-get install -y libboost-all-dev libssl-dev
 RUN wget https://github.com/UZ-SLAMLab/ORB_SLAM3/archive/refs/tags/v1.0-release.zip &&\
     unzip v1.0-release.zip &&\
+    rm -rf v1.0-release.zip &&\
     cd ORB_SLAM3-1.0-release &&\
     sh build.sh
