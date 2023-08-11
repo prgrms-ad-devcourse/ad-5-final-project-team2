@@ -4,7 +4,7 @@ FROM nvcr.io/nvidia/tensorrt:22.07-py3
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y && \
-    apt-get install sudo libeigen3-dev wget build-essential cmake && \
+    apt-get install sudo libeigen3-dev wget build-essential cmake gdb && \
     # OpenCV
     apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev -y && \
     wget -O opencv.zip https://github.com/opencv/opencv/archive/4.4.0.zip && \
