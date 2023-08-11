@@ -50,7 +50,6 @@ ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
 ${PROJECT_SOURCE_DIR}/include/CameraModels
 ${PROJECT_SOURCE_DIR}/Thirdparty/Sophus
-${PROJECT_SOURCE_DIR}/Thirdparty/SuperPoint/include
 ${EIGEN3_INCLUDE_DIR}
 ${Pangolin_INCLUDE_DIRS}
 )
@@ -86,7 +85,6 @@ src/GeometricTools.cc
 src/TwoViewReconstruction.cc
 src/Config.cc
 src/Settings.cc
-src/SPextractor.cc
 include/System.h
 include/Tracking.h
 include/LocalMapping.h
@@ -117,11 +115,9 @@ include/TwoViewReconstruction.h
 include/SerializationUtils.h
 include/Config.h
 include/Settings.h
-include/SPextractor.h
 )
 
 add_subdirectory(Thirdparty/g2o)
-add_subdirectory(Thirdparty/SuperPoint)
 
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
@@ -129,7 +125,6 @@ ${EIGEN3_LIBS}
 ${Pangolin_LIBRARIES}
 ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
-${PROJECT_SOURCE_DIR}/Thirdparty/SuperPoint/build/libsuperpointglue_lib.so
 -lboost_serialization
 -lcrypto
 )
