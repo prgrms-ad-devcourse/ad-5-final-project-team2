@@ -45,15 +45,30 @@ class ORBextractor
 public:
     
     enum {HARRIS_SCORE=0, FAST_SCORE=1 };
-
+    /**
+     * @brief Construct a new ORBextractor object
+     * 
+     * @param nfeatures  pyraimd by max features
+     * @param scaleFactor scale pyraimd scale factor
+     * @param nlevels scale pyramid max level
+     * @param iniThFAST FAST detector threshold
+     * @param minThFAST FAST detector min threshold
+     */
     ORBextractor(int nfeatures, float scaleFactor, int nlevels,
                  int iniThFAST, int minThFAST);
 
     ~ORBextractor(){}
 
-    // Compute the ORB features and descriptors on an image.
-    // ORB are dispersed on the image using an octree.
-    // Mask is ignored in the current implementation.
+    /**
+     * @brief Image feature extract to ORB
+     * 
+     * @param _image input image
+     * @param _mask nosued argument
+     * @param _keypoints all pyramid ORB keypoint vector
+     * @param _descriptors all keypoint descriptor matrix
+     * @param vLappingArea limit keypoint extract area
+     * @return int all keypoint length
+     */
     int operator()( cv::InputArray _image, cv::InputArray _mask,
                     std::vector<cv::KeyPoint>& _keypoints,
                     cv::OutputArray _descriptors, std::vector<int> &vLappingArea);
@@ -83,29 +98,50 @@ public:
     std::vector<cv::Mat> mvImagePyramid;
 
 protected:
-
+    /**
+     * @brief configure image pyramid
+     * mvImagePyramid에 level별 scale에 맞는 image 저장
+     * @param image 
+     */
     void ComputePyramid(cv::Mat image);
+    /**
+     * @brief Extract keypoints from all image pyramid levels
+     * 이미지 pyramid 별로 keypoint를 추출한다
+     * @param allKeypoints all image pyramid keypoints
+     */
     void ComputeKeyPointsOctTree(std::vector<std::vector<cv::KeyPoint> >& allKeypoints);    
+    /**
+     * @brief 
+     * 
+     * @param vToDistributeKeys 
+     * @param minX 
+     * @param maxX 
+     * @param minY 
+     * @param maxY 
+     * @param nFeatures 
+     * @param level 
+     * @return std::vector<cv::KeyPoint> 
+     */
     std::vector<cv::KeyPoint> DistributeOctTree(const std::vector<cv::KeyPoint>& vToDistributeKeys, const int &minX,
                                            const int &maxX, const int &minY, const int &maxY, const int &nFeatures, const int &level);
 
     void ComputeKeyPointsOld(std::vector<std::vector<cv::KeyPoint> >& allKeypoints);
-    std::vector<cv::Point> pattern;
+    std::vector<cv::Point> pattern; //< ORB descriptor bit pattern
 
-    int nfeatures;
-    double scaleFactor;
-    int nlevels;
-    int iniThFAST;
-    int minThFAST;
+    int nfeatures; //< pyraimd by max features
+    double scaleFactor; //< scale pyraimd scale factor
+    int nlevels; //< scale pyramid max level
+    int iniThFAST; //< FAST detector threshold
+    int minThFAST; //< FAST detector min threshold
 
-    std::vector<int> mnFeaturesPerLevel;
+    std::vector<int> mnFeaturesPerLevel; //<
 
-    std::vector<int> umax;
+    std::vector<int> umax; //<
 
-    std::vector<float> mvScaleFactor;
-    std::vector<float> mvInvScaleFactor;    
-    std::vector<float> mvLevelSigma2;
-    std::vector<float> mvInvLevelSigma2;
+    std::vector<float> mvScaleFactor; //< pyramid by scale factor
+    std::vector<float> mvInvScaleFactor; //< pyramid by inverse scale factor
+    std::vector<float> mvLevelSigma2; //< pyramid by scale factor square
+    std::vector<float> mvInvLevelSigma2; //<  pyramid by scale factor square
 };
 
 } //namespace ORB_SLAM
