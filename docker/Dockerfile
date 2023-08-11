@@ -10,9 +10,11 @@ RUN apt-get update -y && \
 # OpenCV
 RUN wget -O opencv.zip https://github.com/opencv/opencv/archive/4.4.0.zip && \
     unzip opencv.zip && \
+    rm -rf opencv.zip &&\
     cd opencv-4.4.0  && \
     mkdir build && cd build && \
-    cmake .. && make -j4 && make install
+    cmake .. && make -j4 && make install &&\
+    cd ../../
 
 # Pangolin
 RUN wget https://github.com/stevenlovegrove/Pangolin/archive/refs/tags/v0.6.zip &&\
@@ -21,6 +23,7 @@ RUN wget https://github.com/stevenlovegrove/Pangolin/archive/refs/tags/v0.6.zip 
     cd Pangolin-0.6 && mkdir build && cd build &&\
     cmake .. &&\
     make -j4 &&\
+    make install &&\
     cd ../../
 
 # SuperSLAM
