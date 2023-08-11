@@ -6,6 +6,8 @@ PROJECT(g2o)
 SET(g2o_C_FLAGS)
 SET(g2o_CXX_FLAGS)
 
+add_definitions('-w')
+
 # default built type
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
