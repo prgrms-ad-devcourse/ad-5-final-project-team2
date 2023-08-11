@@ -63,7 +63,7 @@ public:
      * @brief Image feature extract to ORB
      * 
      * @param _image input image
-     * @param _mask nosued argument
+     * @param _mask noused argument
      * @param _keypoints all pyramid ORB keypoint vector
      * @param _descriptors all keypoint descriptor matrix
      * @param vLappingArea limit keypoint extract area
@@ -111,7 +111,7 @@ protected:
      */
     void ComputeKeyPointsOctTree(std::vector<std::vector<cv::KeyPoint> >& allKeypoints);    
     /**
-     * @brief 
+     * @brief
      * 
      * @param vToDistributeKeys 
      * @param minX 
@@ -141,7 +141,7 @@ protected:
     std::vector<float> mvScaleFactor; //< pyramid by scale factor
     std::vector<float> mvInvScaleFactor; //< pyramid by inverse scale factor
     std::vector<float> mvLevelSigma2; //< pyramid by scale factor square
-    std::vector<float> mvInvLevelSigma2; //<  pyramid by scale factor square
+    std::vector<float> mvInvLevelSigma2; //<  pyramid by inverse scale factor square
 };
 
 } //namespace ORB_SLAM
