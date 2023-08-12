@@ -55,8 +55,7 @@ public:
      * @return int all keypoint length
      */
     int operator()( cv::InputArray _image,
-                    std::vector<cv::KeyPoint>& _keypoints,
-                    Eigen::Matrix<double, 259, Eigen::Dynamic>& _descriptors, std::vector<int> &vLappingArea);
+                    std::vector<cv::KeyPoint>& _keypoints, cv::OutputArray _ORBDescriptors, Eigen::Matrix<double, 259, Eigen::Dynamic>& _descriptors, std::vector<int> &vLappingArea);
 
     int inline GetLevels(){
         return nlevels;}
@@ -126,6 +125,8 @@ protected:
 
     int mInputImageWidth;
     int mInputImageHeight;
+
+    std::vector<cv::Point> pattern; //< ORB descriptor bit pattern
 private:
     static std::shared_ptr<SuperPoint> mSuperpoint; //< SuperPoint model
     static bool mModelInitializationFlag; //< model initialization flag

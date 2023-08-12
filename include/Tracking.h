@@ -39,6 +39,8 @@
 
 #include "GeometricCamera.h"
 
+#include "SPextractor.h"
+
 #include <mutex>
 #include <unordered_set>
 
@@ -260,6 +262,8 @@ protected:
     //ORB
     ORBextractor* mpORBextractorLeft, *mpORBextractorRight;
     ORBextractor* mpIniORBextractor;
+
+    std::shared_ptr<SPextractor> mSPextractor;
 
     //BoW
     ORBVocabulary* mpORBVocabulary;

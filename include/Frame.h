@@ -38,6 +38,7 @@
 
 #include "Eigen/Core"
 #include "sophus/se3.hpp"
+#include "SPextractor.h"
 
 namespace ORB_SLAM3
 {
@@ -67,11 +68,17 @@ public:
     // Constructor for Monocular cameras.
     Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, GeometricCamera* pCamera, cv::Mat &distCoef, const float &bf, const float &thDepth, Frame* pPrevF = static_cast<Frame*>(NULL), const IMU::Calib &ImuCalib = IMU::Calib());
 
+    // Constructor for Monocular cameras (Superpoint).
+    Frame(const cv::Mat &imGray, const double &timeStamp, std::shared_ptr<SPextractor> extractor,ORBVocabulary* voc, GeometricCamera* pCamera, cv::Mat &distCoef, const float &bf, const float &thDepth, Frame* pPrevF = static_cast<Frame*>(NULL), const IMU::Calib &ImuCalib = IMU::Calib());
+
     // Destructor
     // ~Frame();
 
     // Extract ORB on the image. 0 for left image and 1 for right image.
     void ExtractORB(int flag, const cv::Mat &im, const int x0, const int x1);
+
+    // Extract Superpoint on the image 
+    void ExtractSuperpoint(int flag, const cv::Mat &im, const int x0, const int x1);
 
     // Compute Bag of Words representation.
     void ComputeBoW();
@@ -195,6 +202,9 @@ public:
     // Feature extractor. The right is used only in the stereo case.
     ORBextractor* mpORBextractorLeft, *mpORBextractorRight;
 
+    // Suerpoint extractor. no support stereo case.
+    std::shared_ptr<SPextractor> mSPextractor;
+
     // Frame timestamp.
     double mTimeStamp;
 
@@ -240,6 +250,8 @@ public:
 
     // ORB descriptor, each row associated to a keypoint.
     cv::Mat mDescriptors, mDescriptorsRight;
+
+    Eigen::Matrix<double, 259, Eigen::Dynamic> mSPDescriptors;
 
     // MapPoints associated to keypoints, NULL pointer if no association.
     // Flag to identify outlier associations.
