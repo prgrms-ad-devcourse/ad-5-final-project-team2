@@ -423,7 +423,7 @@ namespace ORB_SLAM3
             std::cout << "wait superpoint model initialization..." << std::endl;
             Configs configs(
                 "/workspace/ad-5-final-project-team2/Thirdparty/SuperPoint-SuperGlue-TensorRT/config/config.yaml",
-                "/workspace/ad-5-final-project-team2/Thirdparty/SuperPoint-SuperGlue-TensorRT/weight/"
+                "/workspace/ad-5-final-project-team2/Thirdparty/SuperPoint-SuperGlue-TensorRT/weights/"
             );
             SPextractor::mSuperpoint = std::make_shared<SuperPoint>(configs.superpoint_config);
             if (SPextractor::mSuperpoint->build()) {
