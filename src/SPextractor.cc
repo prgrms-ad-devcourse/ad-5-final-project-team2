@@ -509,28 +509,39 @@ namespace ORB_SLAM3
         allKeypoints.resize(nlevels);
         const float W = 35;
 
+        cv::Mat image;
+        mvImagePyramid[0].copyTo(image);
+        cv::resize(image, image, cv::Size(mInputImageWidth, mInputImageHeight));
+        mSuperpoint->infer(image, descriptors);
+
         for (int level = 0; level < nlevels; ++level)
         {
             cv::Mat image;
             mvImagePyramid[level].copyTo(image);
             cv::resize(image, image, cv::Size(mInputImageWidth, mInputImageHeight));
-            mSuperpoint->infer(image, descriptors);
+
+            Eigen::Matrix<double, 259, Eigen::Dynamic> levelDescriptor;
+
+            mSuperpoint->infer(image, levelDescriptor);
 
             const int scaledPatchSize = PATCH_SIZE * mvScaleFactor[level];
 
-            std::vector<cv::KeyPoint> & keypoints = allKeypoints[level];
-            keypoints.reserve(descriptors.cols());
+            std::vector<cv::KeyPoint>& keypoints = allKeypoints[level];
+            keypoints.reserve(levelDescriptor.cols());
 
-            for (int i = 0; i < descriptors.cols(); ++i)
+            for (int i = 0; i < levelDescriptor.cols(); ++i)
             {
-                keypoints[i].pt.x = descriptors(1, i);
-                keypoints[i].pt.y = descriptors(2, i);
-                keypoints[i].octave = level;
-                keypoints[i].size = scaledPatchSize;
-            }
+                cv::KeyPoint keypoint;
+                keypoint.pt.x = levelDescriptor(1, i);
+                keypoint.pt.y = levelDescriptor(2, i);
+                keypoint.octave = level;
+                keypoint.size = scaledPatchSize;
 
+                keypoints.push_back(keypoint);
+            }
+            
             computeOrientation(image, allKeypoints[level], umax);
-        }            
+        }
     }
 
 
@@ -614,7 +625,7 @@ namespace ORB_SLAM3
                 i++;
             }
         }
-        //cout << "[ORBextractor]: extracted " << _keypoints.size() << " KeyPoints" << endl;
+        cout << "[SPextractor]: extracted " << _keypoints.size() << " KeyPoints" << endl;
         return monoIndex;
     }
 
