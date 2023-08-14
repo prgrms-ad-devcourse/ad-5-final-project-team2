@@ -520,7 +520,7 @@ namespace ORB_SLAM3
         {
             cv::Mat image;
             mvImagePyramid[level].copyTo(image);
-            cv::resize(image, image, cv::Size(mInputImageWidth, mInputImageHeight));
+            // cv::resize(image, image, cv::Size(mInputImageWidth, mInputImageHeight));
 
             double widthScaleFactor = 1.0;
             double heightScaleFactor = 1.0;
@@ -549,9 +549,10 @@ namespace ORB_SLAM3
                 {
                     descriptors(j, padding + i) = levelDescriptor(j, i);
                 }
+                // keypoints[0].x === descriptor(1, 0)
+                // keypoints[1].x === descriptor(1, 1)
             }
             padding += levelDescriptor.cols();
-            
             computeOrientation(image, allKeypoints[level], umax);
         }
     }
@@ -571,7 +572,8 @@ namespace ORB_SLAM3
         ComputePyramid(image);
 
         vector < vector<KeyPoint> > allKeypoints;
-        ComputeKeypointAndDescriptor(allKeypoints, _descriptors);
+        Eigen::Matrix<double, 259, Eigen::Dynamic> allDescriptors;
+        ComputeKeypointAndDescriptor(allKeypoints, allDescriptors);
         //ComputeKeyPointsOld(allKeypoints);
 
         Mat descriptors;
@@ -590,6 +592,8 @@ namespace ORB_SLAM3
         //_keypoints.clear();
         //_keypoints.reserve(nkeypoints);
         _keypoints = vector<cv::KeyPoint>(nkeypoints);
+        // _keypoints = allKeypoints[0];
+        _descriptors.resize(259, nkeypoints);
 
         int offset = 0;
         //Modified for speeding up stereo fisheye matching
@@ -626,12 +630,17 @@ namespace ORB_SLAM3
 
                 if(keypoint->pt.x >= vLappingArea[0] && keypoint->pt.x <= vLappingArea[1]){
                     _keypoints.at(stereoIndex) = (*keypoint);
+                    _descriptors.col(stereoIndex) = allDescriptors.col(i);
                     desc.row(i).copyTo(descriptors.row(stereoIndex));
                     stereoIndex--;
                 }
                 else{
                     _keypoints.at(monoIndex) = (*keypoint);
+                    _descriptors.col(monoIndex) = allDescriptors.col(i);
                     desc.row(i).copyTo(descriptors.row(monoIndex));
+
+                    // std::cout << "PT: " << keypoint->pt << std::endl;
+                    // std::cout << "Descriptor: " << _descriptors(1, monoIndex) << ", "  << _descriptors(2, monoIndex) << std::endl;
                     monoIndex++;
                 }
                 i++;

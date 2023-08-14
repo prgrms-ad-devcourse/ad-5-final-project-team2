@@ -663,9 +663,7 @@ namespace ORB_SLAM3
     }
 
     int SGmatcher::SearchForInitialization(Frame &F1, Frame &F2, vector<cv::Point2f> &vbPrevMatched, vector<int> &vnMatches12, int windowSize)
-    {
-        std::cout << F1.mSPDescriptors.cols() << ", " << F2.mSPDescriptors.cols() << std::endl;
-        
+    {   
         std::vector<cv::DMatch> superglueMatches;
         mSuperglue->matching_points(F1.mSPDescriptors, F2.mSPDescriptors, superglueMatches);
         
