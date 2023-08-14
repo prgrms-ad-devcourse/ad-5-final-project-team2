@@ -99,6 +99,7 @@ Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer,
     mnNumDataset = 0;
     
     mSPextractor = std::make_shared<SPextractor>(1.0, 1);
+    SGmatcher matcher(0.9,true);
 
     vector<GeometricCamera*> vpCams = mpAtlas->GetAllCameras();
     std::cout << "There are " << vpCams.size() << " cameras in the atlas" << std::endl;
@@ -2490,9 +2491,10 @@ void Tracking::MonocularInitialization()
         }
 
         // Find correspondences
-        ORBmatcher matcher(0.9,true);
+        // ORBmatcher matcher(0.9,true);
+        SGmatcher matcher(0.9,true);
         int nmatches = matcher.SearchForInitialization(mInitialFrame,mCurrentFrame,mvbPrevMatched,mvIniMatches,100);
-
+        std::cout << "nmatches: " << nmatches << std::endl;
         // Check if there are enough correspondences
         if(nmatches<100)
         {
@@ -2502,9 +2504,10 @@ void Tracking::MonocularInitialization()
 
         Sophus::SE3f Tcw;
         vector<bool> vbTriangulated; // Triangulated Correspondences (mvIniMatches)
-
+        std::cout << "Tracking.cc ReconstructWithTwoViews" << std::endl;
         if(mpCamera->ReconstructWithTwoViews(mInitialFrame.mvKeysUn,mCurrentFrame.mvKeysUn,mvIniMatches,Tcw,mvIniP3D,vbTriangulated))
         {
+            std::cout << "Tracking.cc ReconstructWithTwoViews OK" << std::endl;
             for(size_t i=0, iend=mvIniMatches.size(); i<iend;i++)
             {
                 if(mvIniMatches[i]>=0 && !vbTriangulated[i])

@@ -87,6 +87,7 @@ namespace ORB_SLAM3 {
             tvr = new TwoViewReconstruction(K);
         }
 
+        std::cout << "vKeys1: " << vKeys1.size() << ", vKeys2: " << vKeys2.size() << std::endl;
         return tvr->Reconstruct(vKeys1,vKeys2,vMatches12,T21,vP3D,vbTriangulated);
     }
 

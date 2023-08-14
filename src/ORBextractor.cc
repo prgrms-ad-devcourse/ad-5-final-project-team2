@@ -889,6 +889,8 @@ namespace ORB_SLAM3
                 keypoints[i].pt.y+=minBorderY;
                 keypoints[i].octave=level;
                 keypoints[i].size = scaledPatchSize;
+
+                // std::cout << "x: " << keypoints[i].pt.x << ", y: " << keypoints[i].pt.y << std::endl;
             }
         }
 

@@ -40,6 +40,8 @@
 #include "GeometricCamera.h"
 
 #include "SPextractor.h"
+#include "SGmatcher.h"
+#include <memory>
 
 #include <mutex>
 #include <unordered_set>

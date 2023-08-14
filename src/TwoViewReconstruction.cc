@@ -110,6 +110,7 @@ namespace ORB_SLAM3
         threadF.join();
 
         // Compute ratio of scores
+
         if(SH+SF == 0.f) return false;
         float RH = SH/(SH+SF);
 
@@ -118,12 +119,12 @@ namespace ORB_SLAM3
         // Try to reconstruct from homography or fundamental depending on the ratio (0.40-0.45)
         if(RH>0.50) // if(RH>0.40)
         {
-            //cout << "Initialization from Homography" << endl;
+            cout << "Initialization from Homography" << endl;
             return ReconstructH(vbMatchesInliersH,H, mK,T21,vP3D,vbTriangulated,minParallax,50);
         }
         else //if(pF_HF>0.6)
         {
-            //cout << "Initialization from Fundamental" << endl;
+            cout << "Initialization from Fundamental" << endl;
             return ReconstructF(vbMatchesInliersF,F,mK,T21,vP3D,vbTriangulated,minParallax,50);
         }
     }
@@ -410,7 +411,8 @@ namespace ORB_SLAM3
 
         float score = 0;
 
-        const float th = 3.841;
+        // const float th = 3.841;
+        const float th = 200.5;
         const float thScore = 5.991;
 
         const float invSigmaSquare = 1.0/(sigma*sigma);
@@ -426,7 +428,6 @@ namespace ORB_SLAM3
             const float v1 = kp1.pt.y;
             const float u2 = kp2.pt.x;
             const float v2 = kp2.pt.y;
-
             // Reprojection error in second image
             // l2=F21x1=(a2,b2,c2)
 
@@ -437,9 +438,9 @@ namespace ORB_SLAM3
             const float num2 = a2*u2+b2*v2+c2;
 
             const float squareDist1 = num2*num2/(a2*a2+b2*b2);
-
+            // std::cout << "squareDist1: " << squareDist1 << ", " << invSigmaSquare << std::endl;
             const float chiSquare1 = squareDist1*invSigmaSquare;
-
+            // std::cout << "chiSquare1: " << chiSquare1 << std::endl;
             if(chiSquare1>th)
                 bIn = false;
             else
@@ -516,6 +517,7 @@ namespace ORB_SLAM3
         if(nGood4>0.7*maxGood)
             nsimilar++;
 
+        std::cout << "maxGood: " << maxGood << ", MinGood: " << nMinGood << ", nsimilar: " << nsimilar << std::endl;
         // If there is not a clear winner or not enough triangulated points reject initialization
         if(maxGood<nMinGood || nsimilar>1)
         {
@@ -576,6 +578,7 @@ namespace ORB_SLAM3
             if(vbMatchesInliers[i])
                 N++;
 
+        
         // We recover 8 motion hypotheses using the method of Faugeras et al.
         // Motion and structure from motion in a piecewise planar environment.
         // International Journal of Pattern Recognition and Artificial Intelligence, 1988

@@ -509,16 +509,21 @@ namespace ORB_SLAM3
         allKeypoints.resize(nlevels);
         const float W = 35;
 
-        cv::Mat image;
-        mvImagePyramid[0].copyTo(image);
-        cv::resize(image, image, cv::Size(mInputImageWidth, mInputImageHeight));
-        mSuperpoint->infer(image, descriptors);
+        // cv::Mat image;
+        // mvImagePyramid[0].copyTo(image);
+        // cv::resize(image, image, cv::Size(mInputImageWidth, mInputImageHeight));
+        // mSuperpoint->infer(image, descriptors);
+
+        int padding = 0;
 
         for (int level = 0; level < nlevels; ++level)
         {
             cv::Mat image;
             mvImagePyramid[level].copyTo(image);
             cv::resize(image, image, cv::Size(mInputImageWidth, mInputImageHeight));
+
+            double widthScaleFactor = 1.0;
+            double heightScaleFactor = 1.0;
 
             Eigen::Matrix<double, 259, Eigen::Dynamic> levelDescriptor;
 
@@ -529,16 +534,23 @@ namespace ORB_SLAM3
             std::vector<cv::KeyPoint>& keypoints = allKeypoints[level];
             keypoints.reserve(levelDescriptor.cols());
 
+            descriptors.resize(259, padding + levelDescriptor.cols());
+
             for (int i = 0; i < levelDescriptor.cols(); ++i)
             {
                 cv::KeyPoint keypoint;
-                keypoint.pt.x = levelDescriptor(1, i);
-                keypoint.pt.y = levelDescriptor(2, i);
+                keypoint.pt.x = static_cast<int>(levelDescriptor(1, i) * widthScaleFactor);
+                keypoint.pt.y = static_cast<int>(levelDescriptor(2, i) * heightScaleFactor);
                 keypoint.octave = level;
                 keypoint.size = scaledPatchSize;
 
                 keypoints.push_back(keypoint);
+                for (int j = 0; j < 259; ++j)
+                {
+                    descriptors(j, padding + i) = levelDescriptor(j, i);
+                }
             }
+            padding += levelDescriptor.cols();
             
             computeOrientation(image, allKeypoints[level], umax);
         }
