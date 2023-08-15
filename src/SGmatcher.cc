@@ -673,11 +673,15 @@ namespace ORB_SLAM3
         for (int i = 0; i < nmatches; ++i)
         {
             cv::DMatch match = superglueMatches[i];
-            double distacne = match.distance;
+            double distance = match.distance;
             int F1matchIndex = match.queryIdx;
             int F2matchIndex = match.trainIdx;
 
-            vnMatches12[F1matchIndex] = F2matchIndex;
+            if (distance <= 0.15)
+            {
+                ++nmatches;
+                vnMatches12[F1matchIndex] = F2matchIndex;
+            }
         }
 
         vector<int> rotHist[HISTO_LENGTH];
