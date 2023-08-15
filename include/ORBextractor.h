@@ -16,6 +16,16 @@
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+* ORBextractor 요약
+* 
+* ORB = Oriented FAST + Rotated BRIEF
+* Image Pyramid : 이미지의 크기를 단계적으로 축소시키며 일련의 축소된 이미지를 피라미드를 생성한다.
+* - > 여러가지 scale 별로 특징점을 검출함으로써 scale에 invariant하게 특징점 검출을 수행할 수 있다.
+* 
+* 
+*/
+
 #ifndef ORBEXTRACTOR_H
 #define ORBEXTRACTOR_H
 
@@ -48,11 +58,11 @@ public:
     /**
      * @brief Construct a new ORBextractor object
      * 
-     * @param nfeatures  pyraimd by max features
-     * @param scaleFactor scale pyraimd scale factor
-     * @param nlevels scale pyramid max level
-     * @param iniThFAST FAST detector threshold
-     * @param minThFAST FAST detector min threshold
+     * @param nfeatures sum of the number of feature points extracted from all levels of image pyramid
+     * @param scaleFactor scaling factor between adjacent levels of the image pyramid
+     * @param nlevels scale pyramid max level (number of pyramid levels), (level 0 = 피라미드 가장 아래층)
+     * @param iniThFAST descriptor threshold for extracting feature points (high)
+     * @param minThFAST descriptor threshold for extracting feature points (low)
      */
     ORBextractor(int nfeatures, float scaleFactor, int nlevels,
                  int iniThFAST, int minThFAST);
@@ -128,15 +138,16 @@ protected:
     void ComputeKeyPointsOld(std::vector<std::vector<cv::KeyPoint> >& allKeypoints);
     std::vector<cv::Point> pattern; //< ORB descriptor bit pattern
 
-    int nfeatures; //< pyraimd by max features
-    double scaleFactor; //< scale pyraimd scale factor
-    int nlevels; //< scale pyramid max level
-    int iniThFAST; //< FAST detector threshold
-    int minThFAST; //< FAST detector min threshold
+    int nfeatures; //< sum of the number of feature points extracted from all levels of image pyramid
+    double scaleFactor; //< scaling factor between adjacent levels of the image pyramid
+    int nlevels; //< scale pyramid max level (number of pyramid levels), (level 0 = 피라미드 가장 아래층)
+    int iniThFAST; //< descriptor threshold for extracting feature points (high)
+    int minThFAST; //< descriptor threshold for extracting feature points (low)
 
-    std::vector<int> mnFeaturesPerLevel; //<
+    std::vector<int> mnFeaturesPerLevel; //< the number of feature points extracted from each level of the pyramid
+    // ex) mnFeaturesPerLevel = [216, 181, 151, 126, 105, 87, 73, 61], sum is nfeatures
 
-    std::vector<int> umax; //<
+    std::vector<int> umax; //< 
 
     std::vector<float> mvScaleFactor; //< pyramid by scale factor
     std::vector<float> mvInvScaleFactor; //< pyramid by inverse scale factor
