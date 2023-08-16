@@ -24,7 +24,7 @@
 #include "Frame.h"
 #include "Map.h"
 #include "Converter.h"
-
+#include "SGmatcher.h"
 #include "SerializationUtils.h"
 
 #include <opencv2/core/core.hpp>
@@ -144,6 +144,7 @@ public:
     void ComputeDistinctiveDescriptors();
 
     cv::Mat GetDescriptor();
+    Eigen::Matrix<double, 259, 1> GetSPDescriptor();
 
     void UpdateNormalAndDepth();
 
@@ -223,6 +224,7 @@ protected:
 
      // Best descriptor to fast matching
      cv::Mat mDescriptor;
+     Eigen::Matrix<double, 259, 1> mSPDescriptor;
 
      // Reference KeyFrame
      KeyFrame* mpRefKF;

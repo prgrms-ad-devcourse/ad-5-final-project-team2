@@ -109,6 +109,8 @@ MapPoint::MapPoint(const Eigen::Vector3f &Pos, Map* pMap, Frame* pFrame, const i
     mfMinDistance = mfMaxDistance/pFrame->mvScaleFactors[nLevels-1];
 
     pFrame->mDescriptors.row(idxF).copyTo(mDescriptor);
+    mSPDescriptor = pFrame->mSPDescriptors.col(idxF);
+    std::cout << "MSPDescriptor: " << pFrame->mSPDescriptors.col(idxF) << std::endl;
 
     // MapPoints can be created from Tracking and Local Mapping. This mutex avoid conflicts with id.
     unique_lock<mutex> lock(mpMap->mMutexPointCreation);
@@ -326,11 +328,12 @@ float MapPoint::GetFoundRatio()
     return static_cast<float>(mnFound)/mnVisible;
 }
 
+// TODO: change superglue
 void MapPoint::ComputeDistinctiveDescriptors()
 {
     // Retrieve all observed descriptors
     vector<cv::Mat> vDescriptors;
-
+    Eigen::Matrix<double, 259, Eigen::Dynamic> SPDescriptors;
     map<KeyFrame*,tuple<int,int>> observations;
 
     {
@@ -344,7 +347,8 @@ void MapPoint::ComputeDistinctiveDescriptors()
         return;
 
     vDescriptors.reserve(observations.size());
-
+    SPDescriptors.resize(259, observations.size());
+    int i = 0;
     for(map<KeyFrame*,tuple<int,int>>::iterator mit=observations.begin(), mend=observations.end(); mit!=mend; mit++)
     {
         KeyFrame* pKF = mit->first;
@@ -353,11 +357,15 @@ void MapPoint::ComputeDistinctiveDescriptors()
             tuple<int,int> indexes = mit -> second;
             int leftIndex = get<0>(indexes), rightIndex = get<1>(indexes);
 
-            if(leftIndex != -1){
+            if (leftIndex != -1) {
                 vDescriptors.push_back(pKF->mDescriptors.row(leftIndex));
+                SPDescriptors.col(i) = pKF->mSPDescriptors.col(leftIndex);
+                ++i;
             }
-            if(rightIndex != -1){
+            if (rightIndex != -1) {
                 vDescriptors.push_back(pKF->mDescriptors.row(rightIndex));
+                SPDescriptors.col(i) = pKF->mSPDescriptors.col(rightIndex);
+                ++i;
             }
         }
     }
@@ -374,7 +382,7 @@ void MapPoint::ComputeDistinctiveDescriptors()
         Distances[i][i]=0;
         for(size_t j=i+1;j<N;j++)
         {
-            int distij = ORBmatcher::DescriptorDistance(vDescriptors[i],vDescriptors[j]);
+            int distij = SGmatcher::DescriptorDistance(SPDescriptors.col(i), SPDescriptors.col(j));
             Distances[i][j]=distij;
             Distances[j][i]=distij;
         }
@@ -399,6 +407,7 @@ void MapPoint::ComputeDistinctiveDescriptors()
     {
         unique_lock<mutex> lock(mMutexFeatures);
         mDescriptor = vDescriptors[BestIdx].clone();
+        mSPDescriptor = SPDescriptors.col(BestIdx);
     }
 }
 
@@ -406,6 +415,12 @@ cv::Mat MapPoint::GetDescriptor()
 {
     unique_lock<mutex> lock(mMutexFeatures);
     return mDescriptor.clone();
+}
+
+Eigen::Matrix<double, 259, 1> MapPoint::GetSPDescriptor()
+{
+    unique_lock<mutex> lock(mMutexFeatures);
+    return mSPDescriptor;
 }
 
 tuple<int,int> MapPoint::GetIndexInKeyFrame(KeyFrame *pKF)

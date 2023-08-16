@@ -60,6 +60,16 @@ namespace ORB_SLAM3
          */
         static int DescriptorDistance(const cv::Mat &a, const cv::Mat &b);
 
+
+        /**
+         * @brief Calculate the Suerpoint Distance for a pair of descriptors
+         * 
+         * @param a one descriptor 
+         * @param b the other descriptor
+         * @return double 
+         */
+        static double DescriptorDistance(const Eigen::Matrix<double, 259, 1> &a, const Eigen::Matrix<double, 259, 1> &b);
+
         /**
          * @brief Tracking of Local MapPoint through projection (Tracking)
          *        Project the Local MapPoint into the current frame, thereby increasing the MapPoints of current frame
